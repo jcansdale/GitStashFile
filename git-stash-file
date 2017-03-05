@@ -1,5 +1,12 @@
 #!/bin/bash
 
+branch_path="stash-file"
+
+if [[ ! $1 ]]; then
+  git branch --list $branch_path/*
+  exit 0
+fi
+
 file="$1"
 shift
 
@@ -8,7 +15,7 @@ if [[ ! -f $file ]]; then
   exit 1
 fi
 
-branch="stash-file/$file"
+branch="$branch_path/$file"
 if [[ "$(git rev-parse --verify --quiet $branch)" != "" ]]; then
   echo "error: branch with name '${branch}' already exists."
   exit 2

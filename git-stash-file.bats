@@ -1,15 +1,24 @@
 #!/bin/bash
 
+# Bash Automated Testing System
 # https://github.com/sstephenson/bats
 
-# how to pick
-# git cherry-pick d42c389f
-
 workspace="test_workspace"
+branch_path="stash-file"
+
+@test "default list stashed files" {
+  file="file.txt"
+  branch="${branch_path}/${file}"
+  git branch $branch
+  
+  output=$(../git-stash-file)
+
+  [[ $output == *$branch ]]
+}
 
 @test "stash file already in repo" {
   file="file.txt"
-  branch="stash-file/${file}"
+  branch="${branch_path}/${file}"
   original_content="original content"
   stash_content="stash content"
   printf "${original_content}" > $file
@@ -26,7 +35,7 @@ workspace="test_workspace"
 
 @test "stash file not in repo" {
   file="file.txt"
-  branch="stash-file/${file}"
+  branch="${branch_path}/${file}"
   stash_content="stash content"
   printf "${stash_content}" > $file
   
@@ -40,7 +49,7 @@ workspace="test_workspace"
 
 @test "stash file branch exists" {
   file="file.txt"
-  branch="stash-file/${file}"
+  branch="${branch_path}/${file}"
   stash_content="stash content"
   printf "${stash_content}" > $file
   
@@ -53,7 +62,7 @@ workspace="test_workspace"
 @test "exit with 2 when branch already exists" {
   file="file.txt"
   printf dummy > $file
-  branch="stash-file/${file}"
+  branch="${branch_path}/${file}"
   git branch "$branch"
   
   run ../git-stash-file $file -m message
