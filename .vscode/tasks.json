@@ -1,0 +1,20 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+
+    "version": "0.1.0",
+    "isShellCommand": true,
+    "showOutput": "always",
+
+    "windows": {
+        // %ProgramFiles% doesn't seem to work
+        "command": "\\Program Files\\Git\\bin\\sh.exe"
+    },
+
+    "tasks": [
+        {
+            "taskName": "test",
+            "isTestCommand": true
+        }
+    ]
+}
