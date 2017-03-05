@@ -1,0 +1,37 @@
+#!/bin/bash
+
+file="$1"
+message="$2"
+
+if [[ ! -f $file ]]; then
+  echo "error: file '${file}' doesn't exist."
+  exit 1
+fi
+
+branchname="stash-file/$1"
+if [[ "$(git rev-parse --verify --quiet $branchname)" != "" ]]; then
+  echo "error: branch with name '${branchname}' already exists."
+  exit 2
+fi
+
+# $path will be empty if $file isn't being tracked
+path="$(git ls-files ${file})"
+head="$(git rev-parse HEAD)"
+
+if [[ ! "$path" ]]; then
+  git add "$file"
+else
+  git commit -m temp
+fi
+
+git commit -m "$message" -- $file
+git branch "$branchname"
+git reset --soft "$head"
+
+if [[ ! "$path" ]]; then
+  rm "$file"
+else
+  git checkout "$head" -- "$file"
+fi
+
+git show "$branchname"
