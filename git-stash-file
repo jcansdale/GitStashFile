@@ -1,16 +1,16 @@
 #!/bin/bash
 
 file="$1"
-message="$2"
+shift
 
 if [[ ! -f $file ]]; then
   echo "error: file '${file}' doesn't exist."
   exit 1
 fi
 
-branchname="stash-file/$1"
-if [[ "$(git rev-parse --verify --quiet $branchname)" != "" ]]; then
-  echo "error: branch with name '${branchname}' already exists."
+branch="stash-file/$file"
+if [[ "$(git rev-parse --verify --quiet $branch)" != "" ]]; then
+  echo "error: branch with name '${branch}' already exists."
   exit 2
 fi
 
@@ -24,8 +24,8 @@ else
   git commit -m temp
 fi
 
-git commit -m "$message" -- $file
-git branch "$branchname"
+git commit $@ -- $file
+git branch "$branch"
 git reset --soft "$head"
 
 if [[ ! "$path" ]]; then
@@ -34,4 +34,4 @@ else
   git checkout "$head" -- "$file"
 fi
 
-git show "$branchname"
+git show "$branch"

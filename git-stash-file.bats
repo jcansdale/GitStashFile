@@ -16,7 +16,7 @@ workspace="test_workspace"
   git commit -m "add file"
   printf "${stash_content}" > $file
   
-  ../git-stash-file $file message
+  ../git-stash-file $file -m message
   
   [[ $(<$file) == $original_content ]]
 }
@@ -26,7 +26,7 @@ workspace="test_workspace"
   stash_content="stash content"
   printf "${stash_content}" > $file
   
-  ../git-stash-file $file message
+  ../git-stash-file $file -m message
   
   [[ ! -f $file ]]
 }
@@ -37,7 +37,7 @@ workspace="test_workspace"
   stash_content="stash content"
   printf "${stash_content}" > $file
   
-  ../git-stash-file $file message
+  ../git-stash-file $file -m message
   
   run git rev-parse "$branch"
   [[ "$status" -eq 0 ]]
@@ -49,7 +49,7 @@ workspace="test_workspace"
   branch="stash-file/${file}"
   git branch "$branch"
   
-  run ../git-stash-file $file message
+  run ../git-stash-file $file -m message
   
   [[ "$status" -eq 2 ]]
 }
@@ -57,7 +57,7 @@ workspace="test_workspace"
 @test "exit with 1 when file doesn't exist" {
   file="missing.txt"
   
-  run ../git-stash-file $file message
+  run ../git-stash-file $file -m message
   
   [[ "$status" -eq 1 ]]
 }
