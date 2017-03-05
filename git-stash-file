@@ -29,6 +29,7 @@ git branch "$branch"
 git reset --soft "$head"
 
 if [[ ! "$path" ]]; then
+  git reset -q -- "$file"
   rm "$file"
 else
   git checkout "$head" -- "$file"

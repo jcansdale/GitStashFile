@@ -9,6 +9,7 @@ workspace="test_workspace"
 
 @test "stash file already in repo" {
   file="file.txt"
+  branch="stash-file/${file}"
   original_content="original content"
   stash_content="stash content"
   printf "${original_content}" > $file
@@ -19,16 +20,22 @@ workspace="test_workspace"
   ../git-stash-file $file -m message
   
   [[ $(<$file) == $original_content ]]
+  git cherry-pick $branch
+  [[ $(<$file) == $stash_content ]]
 }
 
 @test "stash file not in repo" {
   file="file.txt"
+  branch="stash-file/${file}"
   stash_content="stash content"
   printf "${stash_content}" > $file
   
   ../git-stash-file $file -m message
   
+  git status
   [[ ! -f $file ]]
+  git cherry-pick $branch
+  [[ $(<$file) == $stash_content ]]
 }
 
 @test "stash file branch exists" {
