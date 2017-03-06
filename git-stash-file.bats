@@ -59,6 +59,21 @@ branch_path="stash-file"
   [[ "$status" -eq 0 ]]
 }
 
+@test "stash file branch uses only filename" {
+  dir="dir"
+  filename="file.txt"
+  path="$dir/$filename"
+  branch="${branch_path}/${filename}"
+  stash_content="stash content"
+  mkdir $dir
+  printf "${stash_content}" > $path
+  
+  ../git-stash-file $path -m message
+  
+  run git rev-parse "$branch"
+  [[ "$status" -eq 0 ]]
+}
+
 @test "exit with 2 when branch already exists" {
   file="file.txt"
   printf dummy > $file

@@ -15,7 +15,8 @@ if [[ ! -f $file ]]; then
   exit 1
 fi
 
-branch="$branch_path/$file"
+file_name=$(basename $file)
+branch="$branch_path/$file_name"
 if [[ "$(git rev-parse -q --verify $branch)" != "" ]]; then
   echo "error: branch with name '${branch}' already exists."
   exit 2
