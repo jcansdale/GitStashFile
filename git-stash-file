@@ -16,7 +16,7 @@ if [[ ! -f $file ]]; then
 fi
 
 branch="$branch_path/$file"
-if [[ "$(git rev-parse --verify --quiet $branch)" != "" ]]; then
+if [[ "$(git rev-parse -q --verify $branch)" != "" ]]; then
   echo "error: branch with name '${branch}' already exists."
   exit 2
 fi
@@ -25,21 +25,19 @@ fi
 path="$(git ls-files ${file})"
 head="$(git rev-parse HEAD)"
 
-if [[ ! "$path" ]]; then
-  git add "$file"
+if [[ "$path" ]]; then
+  git commit -q -m temp
 else
-  git commit -m temp
+  git add "$file"
 fi
 
 git commit $@ -- $file
-git branch "$branch"
-git reset --soft "$head"
+git branch -q "$branch"
 
-if [[ ! "$path" ]]; then
-  git reset -q -- "$file"
-  rm "$file"
+if [[ "$path" ]]; then
+  git reset -q --soft "$head"
+  git checkout -q "$head" -- "$file"
 else
-  git checkout "$head" -- "$file"
+  git reset -q --mixed "$head"
+  rm "$file"
 fi
-
-git show "$branch"
